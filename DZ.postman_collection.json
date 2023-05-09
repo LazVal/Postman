@@ -477,6 +477,13 @@
 									"    console.log(\"salary= \" +resp_json.salary[i]);\r",
 									"}\r",
 									"\r",
+									"//Передать в окружение переменную name1\r",
+									"pm.environment.set(\"name_1\", resp_json.name);\r",
+									"//Передать в окружение переменную age1\r",
+									"pm.environment.set(\"name_1\", resp_json.age);\r",
+									"//Передать в окружение переменную salary1\r",
+									"pm.environment.set(\"name_1\", resp_json.age);\r",
+									"\r",
 									""
 								],
 								"type": "text/javascript"
@@ -561,11 +568,13 @@
 									"    pm.expect(+resp_json.qa_salary_after_12_months).to.eql(+req_f.salary*2.7)\r",
 									"});\r",
 									"//Проверить, что параметр qa_salary_after_1.5_year равен salary*3.3 из request (salary забрать из request.)\r",
-									"//pm.test(\"resp_json_qa_salary_after_1.5_year = req_f_qa_salary*3.3\", function(){\r",
-									"   // pm.expect(+resp_json.qa_salary_after_1.5_year).to.eql(+req_f.salary*3.3)\r",
-									"//});\r",
+									"pm.test(\"resp_json_qa_salary_after_1.5_year = req_f_qa_salary*3.3\", function(){\r",
+									"   pm.expect(resp_json[\"qa_salary_after_1.5_year\"]).to.eql(+req_f.salary*3.3)\r",
+									"});\r",
 									"//Проверить, что параметр qa_salary_after_3.5_years равен salary*3.8 из request (salary забрать из request.)\r",
-									"\r",
+									"pm.test(\"resp_json_qa_salary_after_3.5_years = salary*3.8\", function(){\r",
+									"    pm.expect(resp_json[\"qa_salary_after_3.5_years\"]).to.eql(+req_f.salary*3.8)\r",
+									"});\r",
 									"// Проверить, что в параметре person, 1-й элемент из u_name равен salary из request (salary забрать из request.)\r",
 									"pm.test(\"resp_json_person.u_name[1] = salary\", function(){\r",
 									"    pm.expect(+resp_json.person.u_name[1]).to.eql(+req_f.salary)\r",
@@ -579,7 +588,7 @@
 									"    pm.expect(+resp_json.person.u_salary_5_years).to.eql(+req_f.salary*4.2)\r",
 									"});\r",
 									"//***Написать цикл который выведет в консоль по порядку элементы списка из параметра person.\r",
-									"for(var i = 0 in resp_json.person){\r",
+									"for (var i = 0 in resp_json.person){\r",
 									"    console.log(\"person: \"+resp_json.person[i]);\r",
 									"}\r",
 									"//Написать цикл который выведет в консоль по порядку элементы списка + значения из параметра person.\r",
@@ -777,90 +786,6 @@
 					"response": []
 				},
 				{
-					"name": "User_info Copy",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"let req_f = request.data\r",
-									"let resp_f = pm.response.json();\r",
-									"\r",
-									"let req_age = +req_f.age\r",
-									"let resp_age = +resp_f.age\r",
-									"\r",
-									"let req_salary = +req_f.salary\r",
-									"let resp_salary_1_5_years = resp_f.family.u_salary_1_5_year\r",
-									"\r",
-									"let children_2_name = resp_f.family.children[1][0]\r",
-									"console.log(children_2_name)\r",
-									"\r",
-									"console.log(req_f)\r",
-									"console.log(\"req_age =\" + req_age)\r",
-									"console.log(\"resp_age=\" + resp_age)\r",
-									"\r",
-									"console.log(\"resp_age=\" + typeof resp_age)\r",
-									"\r",
-									"pm.test(\"Chek_age\", function () {\r",
-									"    pm.expect(req_age).to.eql(resp_age);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Chek_salary_1_5_yesr\", function () {\r",
-									"    pm.expect(req_salary * 4).to.eql(resp_salary_1_5_years);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"children_2_name\", function () {\r",
-									"    pm.expect(children_2_name).to.eql(\"Kate\");\r",
-									"});\r",
-									"pm.test(\"name_type\", function () {\r",
-									"    pm.expect(resp_f.name).to.eql(\"Kate\");\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "name",
-									"value": "{{name}}",
-									"type": "text"
-								},
-								{
-									"key": "salary",
-									"value": "{{salary}}",
-									"type": "text"
-								},
-								{
-									"key": "age",
-									"value": "{{age}}",
-									"type": "text"
-								},
-								{
-									"key": "",
-									"value": "",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{url}}/user_info_3",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"user_info_3"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "New_data",
 					"event": [
 						{
@@ -888,12 +813,16 @@
 									"    },\r",
 									"    \"required\": [\"age\",\"name\",\"salary\"]\r",
 									"};\r",
-									"\r",
+									"//Простой вариант\r",
+									"pm.test(\"Validation\", function(){\r",
+									"    pm.expect(tv4.validate(resp_json, schema)).to.be.true\r",
+									"});\r",
+									"//Покажет, где JSON сообщение расходится с JSON схемой. \r",
 									"tv4.setErrorReporter(function(error) {\r",
 									"    return \"Error in here: \" + error.resp_jsonPath + \"in schema \"\r",
 									"    + error.schemaPath;\r",
 									"});\r",
-									"\r",
+									"//Собираем ошибки в массив\r",
 									"pm.test(\"Verify that all values are correct\", function(){\r",
 									"    var res = (tv4.validateMultiple(resp_json, schema, false, true));\r",
 									"    if(!res.valid){\r",
@@ -1062,7 +991,6 @@
 									"pm.test(\"resp_json.family is a objeck\", function () {\r",
 									"    pm.expect(typeof resp_json.family).to.eql(\"object\");\r",
 									"});\r",
-									"//Почему children это объект??? \r",
 									"console.log(typeof resp_json.family.children);\r",
 									"pm.test(\"resp_json.children is a array\", function () {\r",
 									"    pm.expect(typeof resp_json.family.children).to.eql(\"object\");\r",
@@ -1143,6 +1071,7 @@
 							"script": {
 								"exec": [
 									"resp_json = pm.response.json();\r",
+									"// Взять любой объект из присланного списка, используйте js random.\r",
 									"let number = Math.ceil(Math.random()*resp_json.length);\r",
 									"let object = resp_json[number];\r",
 									"console.log(object)\r",
@@ -1192,6 +1121,7 @@
 								"exec": [
 									"resp_json=pm.response.json();\r",
 									"req_data=request.data;\r",
+									"//Проверка структуры json в ответе\r",
 									"let schema = {\r",
 									"    \"type\":\"object\",\r",
 									"    \"properties\":{\r",
@@ -1220,28 +1150,12 @@
 									"\tpm.expect(tv4.validate(resp_json, schema)).to.be.true;\r",
 									"});\r",
 									"\r",
-									"// 1) получить список валют\r",
-									"let cur_id = pm.environment.get(\"Cur_ID\");\r",
-									"let token = pm.environment.get(\"token\");\r",
-									"\r",
-									"// const echoPostRequest={\r",
-									"//     url:\"http://54.157.99.22:80/curr_byn\",\r",
-									"//     method:\"POST\",\r",
-									"//     header: \"Content-Type': 'application/json\",\r",
-									"//     body:{\r",
-									"//         mode:\"formdata\",\r",
-									"//         formdata:\r",
-									"//         [{key:'auth_token',token}]\r",
-									"//     }\r",
-									"// };\r",
-									"// pm.sendRequest(\"echoPostRequest\", function (err, response) {\r",
-									"//     console.log(response.json());\r",
-									"// });\r",
-									"\r",
-									"// // for (let i=0; i<resp_json.length; i++){\r",
-									"// //     cur_id=resp_json[i].Cur_ID\r",
-									"// //     console.log(cur_id)\r",
-									"// // }\r",
+									"//получить из окружения Cur_ID\r",
+									"cur_id=pm.environment.get(\"Cur_ID\");\r",
+									"//получить из окружения token\r",
+									"token=pm.environment.get(\"token\")\r",
+									"console.log(cur_id)\r",
+									"console.log(token)\r",
 									"\r",
 									""
 								],
