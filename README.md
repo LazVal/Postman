@@ -277,3 +277,12 @@ pm.test("Verify that all values are correct", function(){
     pm.expect(res.valid).to.be.true;
 });
 ```
+3) Взять любой объект из присланного списка, используйте js random.
+```javascript
+resp_json = pm.response.json();
+let number = Math.ceil(Math.random()*resp_json.length);
+let object = resp_json[number];
+console.log(object)
+pm.environment.set("Cur_ID", object.Cur_ID);
+console.log(object.Cur_ID)
+```
