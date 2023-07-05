@@ -213,3 +213,67 @@ for (var key of Object.keys(resp_json.person)) {
     console.log(key + " -> " + resp_json.person[key])
 }
 ```
+## HOMEWORK 3
+1) необходимо залогиниться
+Приходящий токен необходимо передать во все остальные запросы.
+Дальше все запросы требуют наличие токена.
+```javascript 
+token = pm.response.json().token
+pm.environment.set("token", token);
+```
+2) Проверка структуры json в ответе.
+```javascript
+pm.test("Resp is JSON", function(){
+    pm.response.to.be.json
+});
+let  schema = {
+    "type":"object",
+    "properties":{
+        "person":{
+            "type":"object",
+            "properties":{
+                 "u_age":{
+                    "type":"integer",
+                },
+                "u_name":{
+                    "type":"array",
+                },
+                "u_salary_1_5_year":{
+                    "type":"integer",
+                },
+        },
+        "required":["u_age","u_name", "u_salary_1_5_year"]
+        },
+        "qa_salary_after_12_months":{
+            "type:":"number"
+        },
+         "qa_salary_after_6_months":{
+            "type:":"number"
+        },
+         "start_qa_salary":{
+            "type:":"number"
+        },
+
+    },
+    "required":["person","qa_salary_after_12_months", "qa_salary_after_6_months","start_qa_salary"]
+    
+};
+pm.test('Schema is valid', function() {
+  pm.response.to.have.jsonSchema(schema);
+});
+
+tv4.setErrorReporter(function(error) {
+    return "Error in here: " + error.resp_jsonPath + "in schema "
+    + error.schemaPath;
+});
+
+pm.test("Verify that all values are correct", function(){
+    var res = (tv4.validateMultiple(resp_json, schema, false, true));
+    if(!res.valid){
+        for(const error of res.errors){
+            console.log("Validation failed", error)
+        }
+    }
+    pm.expect(res.valid).to.be.true;
+});
+```
