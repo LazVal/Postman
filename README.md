@@ -214,6 +214,7 @@ for (var key of Object.keys(resp_json.person)) {
 }
 ```
 ## HOMEWORK 3
+### /login
 1) необходимо залогиниться
 Приходящий токен необходимо передать во все остальные запросы.
 Дальше все запросы требуют наличие токена.
@@ -221,6 +222,7 @@ for (var key of Object.keys(resp_json.person)) {
 token = pm.response.json().token
 pm.environment.set("token", token);
 ```
+### /User_info
 2) Проверка структуры json в ответе.
 ```javascript
 pm.test("Resp is JSON", function(){
@@ -278,6 +280,7 @@ pm.test("Verify that all values are correct", function(){
 });
 ```
 3) Взять любой объект из присланного списка, используйте js random.
+### /Currency
 ```javascript
 resp_json = pm.response.json();
 let number = Math.ceil(Math.random()*resp_json.length);
@@ -285,4 +288,47 @@ let object = resp_json[number];
 console.log(object)
 pm.environment.set("Cur_ID", object.Cur_ID);
 console.log(object.Cur_ID)
+```
+### /Curr_byn
+4) Проверка структуры json в ответе
+```javascript
+resp_json=pm.response.json();
+req_data=request.data;
+let schema = {
+    "type":"object",
+    "properties":{
+        "Cur_Abbreviation":{
+            "type":"string"
+        },
+        "Cur_ID":{
+            "type":"integer"
+        },
+        "Cur_Name":{
+            "type":"string"
+        },
+        "Cur_OfficialRate":{
+            "type":"number"
+        },
+        "Cur_Scale":{
+            "type":"integer"
+        },
+        "Date":{
+            "type":"string"
+        },
+    },
+    "required":["Cur_Abbreviation","Cur_ID","Cur_Name","Cur_OfficialRate","Cur_Scale","Date"]
+};
+pm.test('Schema is valid', function(){
+	pm.expect(tv4.validate(resp_json, schema)).to.be.true;
+});
+```
+6) получить из окружения Cur_ID
+```javascript
+cur_id=pm.environment.get("Cur_ID");
+```
+7) получить из окружения token
+```javascript
+token=pm.environment.get("token")
+console.log(cur_id)
+console.log(token)
 ```
