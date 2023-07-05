@@ -23,33 +23,47 @@ let resp_json = pm.response.json()
 ```javascript   
 let req_f = request.data
 ```
-//Проверить, что name в ответе равно name s request (name вбить руками.)
+5. Проверить, что name в ответе равно name s request (name вбить руками.)
+```javascript 
 pm.test("Name is equal", function() {
     pm.expect(resp_json.name).to.eql("Lena")
 });
-//Проверить, что age в ответе равно age s request (age вбить руками.)
+```
+6. Проверить, что age в ответе равно age s request (age вбить руками.)
+```javascript 
 pm.test("Age is equal", function() {
     pm.expect(+resp_json.age).to.eql(30)
 });
-//Проверить, что salary в ответе равно salary s request (salary вбить руками.)
+```
+7. Проверить, что salary в ответе равно salary s request (salary вбить руками.)
+```javascript 
 pm.test("Salary is equal", function() {
     pm.expect(resp_json.salary).to.eql(250)
-}) ;   
- //Проверить, что name в ответе равно name s request (name забрать из request.)
+}) ;
+```   
+ 8. Проверить, что name в ответе равно name s request (name забрать из request.)
+```javascript 
  pm.test("Name_resp = Name_req", function() {
     pm.expect(resp_json.name).to.eql(req_f.name)
 }) ;
-//Проверить, что age в ответе равно age s request (age забрать из request.)
+```
+9. Проверить, что age в ответе равно age s request (age забрать из request.)
  pm.test("Age_resp = Age_req", function() {
     pm.expect(+resp_json.age).to.eql(+req_f.age)
 }) ;
-//Проверить, что salary в ответе равно salary s request (salary забрать из request.)
+```
+10. Проверить, что salary в ответе равно salary s request (salary забрать из request.)
 pm.test("Salary_resp = Salary_req", function(){
     pm.expect(+resp_json.salary).to.eql(+req_f.salary)
 });
-//Вывести в консоль параметр family из response.
+```
+11. Вывести в консоль параметр family из response.
+```javascript 
 console.log(resp_json.family)
-//Проверить что u_salary_1_5_year в ответе равно salary*4 (salary забрать из request)
+```
+12. Проверить что u_salary_1_5_year в ответе равно salary*4 (salary забрать из request)
+```javascript 
 pm.test("u_salary_1_5_year = Salary_req*4", function(){
     pm.expect(+resp_json.family.u_salary_1_5_year).to.eql(+req_f.salary*4)
 });
+```
