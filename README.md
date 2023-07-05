@@ -200,5 +200,16 @@ pm.environment.set("name_1", resp_json.age);
 ```javascript 
 pm.environment.set("name_1", resp_json.age);
 ```
-
-
+### /user_info_2
+39. Написать цикл который выведет в консоль по порядку элементы списка из параметра person.
+```javascript 
+for (var i = 0 in resp_json.person){
+    console.log("person: "+resp_json.person[i]);
+}
+```
+40. Написать цикл который выведет в консоль по порядку элементы списка + значения из параметра person.
+```javascript 
+for (var key of Object.keys(resp_json.person)) {
+    console.log(key + " -> " + resp_json.person[key])
+}
+```
